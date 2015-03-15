@@ -1,21 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
- 
-<h:head>
-</h:head>
-<h:body>
-	
- 
-	<h:form>
-	   <p:editor value="#{editor.value}" />
-	   <p:calendar disabledWeekends="true" locale="pl" lang="pl"></p:calendar>
-	</h:form>
- 
-</h:body>
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+    </h:head>
+    <h:body>
+        <h1>Applications Manager</h1>
+        <h:form id="form">
+            <p:growl id="selectedRow" showDetail="true" />
+
+            <p:growl id="growl" showDetail="true" sticky="true" life="2000" />  
+
+            <p:panel header="Add/edit application">  
+                <h:panelGrid columns="2" cellpadding="5">  
+                    <p:outputLabel for="msgName" value="Application name:" />   
+                    <p:inputText id="msgName" value="#{app.name}" required="true" immediate="true"/>  
+                    <p:outputLabel for="msgContent" value="Application content:" />
+                    <p:inputTextarea id="msgContent" value="#{app.content}" immediate="true" required="true" rows="5" cols="30" counter="counter" maxlength="255" counterTemplate="{0} characters remaining." autoResize="false" />
+                    <h:outputText id="counter" />
+                </h:panelGrid>  
+
+                <p:commandButton value="Save" process="@form" ajax="false" id="ajax" update="growl" actionListener="#{app.save}" styleClass="ui-priority-primary" />
+            </p:panel> 
+
+            <!-- table -->
+
+            <p:dataTable  id="tbl" var="apps" value="#{appTable.applications}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                         paginator="true" rows="10" style="margin-bottom:20px" widgetVar="appTableVar" 
+                         filteredValue="#{appTable.filteredApps}"
+                         selectionMode="single" selection="#{app.selectedApp}" rowKey="#{apps.applicationId.id}"
+                         >
+
+                <p:ajax event="rowSelect" listener="#{app.onRowSelect}" update=":form:selectedRow" />
+                <p:ajax event="rowUnselect" listener="#{app.onRowUnselect}" update=":form:selectedRow" />
+
+                <f:facet name="{Exporters}">
+                    <h:commandLink>
+                        <p:graphicImage name="/demo/images/excel.png" width="24"/>
+                        <p:dataExporter type="xls" target="tbl" fileName="cars" />
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage name="/demo/images/pdf.png" width="24"/>
+                        <p:dataExporter type="pdf" target="tbl" fileName="cars"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage name="/demo/images/csv.png" width="24"/>
+                        <p:dataExporter type="csv" target="tbl" fileName="cars" />
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage name="/demo/images/xml.png" width="24"/>
+                        <p:dataExporter type="xml" target="tbl" fileName="cars" />
+                    </h:commandLink>
+                </f:facet>
+
+                <!-- history -->
+
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Show history" />
+                        
+                    </f:facet>
+                    
+                    <p:commandButton value="Show history" id="showHist" ajax="true" action="#{app.history}">
+                        <f:param name="selectedRow" value="#{apps.applicationId.id}" />
+                    
+                    
+                    <p:overlayPanel id="moviePanel" for="showHist" hideEffect="fade" dynamic="true" style="width:600px">
+                    <p:dataTable var="appHist" value="#{app.appHistory}" rows="5" paginator="true">
+                        <p:column headerText="Id">
+                            <h:outputText value="#{appHist.applicationId.id}" />
+                        </p:column>
+
+                        <p:column headerText="Name">
+                            <h:outputText value="#{appHist.applicationId.name}" />
+                        </p:column>
+
+                        <p:column headerText="Content">
+                            <h:outputText value="#{appHist.applicationId.content}" />
+                        </p:column>
+
+                        <p:column headerText="Modified date">
+                            <h:outputText value="#{appHist.modDate}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:overlayPanel>
+                        </p:commandButton>
+                </p:column>
+
+                <!-- end history -->
+
+
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Id" />
+                    </f:facet>
+                    <h:outputText value="#{apps.applicationId.id}" />
+                </p:column>
+
+                <p:column filterBy="#{apps.applicationId.name}" headerText="Name" footerText="contains" filterMatchMode="contains">
+                    <h:outputText value="#{apps.applicationId.name}" />
+                </p:column>
+
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Content" />
+                    </f:facet>
+                    <h:outputText value="#{apps.applicationId.content}" />
+                </p:column>
+
+                <p:column filterBy="#{apps.stateId.stateName}" headerText="State" footerText="in" filterMatchMode="in">
+                    <f:facet name="filter">
+                        <p:selectCheckboxMenu label="States" onchange="PF('appTableVar').filter()" panelStyle="width:125px" scrollHeight="150">
+                            <f:selectItems value="#{appTable.states}" />
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{apps.stateId.stateName}" />
+                </p:column>
+
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Last modified date" />
+                    </f:facet>
+                    <h:outputText value="#{apps.modDate}" />
+                </p:column>
+            </p:dataTable>
+
+            <h3>Export Page Data Only</h3>
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/excel.png" />
+                <p:dataExporter type="xls" target="tbl" fileName="cars" pageOnly="true"/>
+            </h:commandLink>
+
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/pdf.png" />
+                <p:dataExporter type="pdf" target="tbl" fileName="cars" pageOnly="true" />
+            </h:commandLink>
+
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/csv.png" />
+                <p:dataExporter type="csv" target="tbl" fileName="cars" pageOnly="true" />
+            </h:commandLink>
+
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/xml.png" />
+                <p:dataExporter type="xml" target="tbl" fileName="cars" pageOnly="true" />
+            </h:commandLink>
+
+        </h:form>
+
+    </h:body>
 </html>
