@@ -44,6 +44,20 @@ public class ApplicationService implements Serializable {
         appHistory.setStateId(createdState);
         appHistory.setModDate(new Date());
         appHistory.setApplicationId(application);
+        appHistory.setNewContent(application.getContent());
+        getAppHistoryDao().save(appHistory);
+    }
+    
+    @Transactional(readOnly = false)
+    public void updateApplication(Application application, String reason, String newContent, ApplicationState applicationState) {
+        getApplicationDao().update(application);
+        AppStates newState = getAppStatesDao().getAppStateByName(applicationState);
+        AppHistory appHistory = new AppHistory();
+        appHistory.setStateId(newState);
+        appHistory.setModDate(new Date());
+        appHistory.setReason(reason);
+        appHistory.setNewContent(newContent);
+        appHistory.setApplicationId(application);
         getAppHistoryDao().save(appHistory);
     }
     

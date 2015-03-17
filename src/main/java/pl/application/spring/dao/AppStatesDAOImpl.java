@@ -34,7 +34,7 @@ public class AppStatesDAOImpl implements AppStatesDAO, Serializable {
         Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         Query query = session.getNamedQuery("AppStates.findByStateName")
-                .setString("stateName", applicationState.getName());
+                .setString("stateName", applicationState.name());
         List<AppStates> appStates = query.list();
         tx.commit();
         session.close();

@@ -24,11 +24,20 @@ public class ApplicationDAOImpl implements ApplicationDAO, Serializable {
         Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.persist(application);
-        session.flush();
         tx.commit();
         Integer id = application.getId();
         session.close();
         return id;
+    }
+    
+    @Override
+    public Application update(Application application) {
+        Session session = this.sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        session.merge(application);
+        tx.commit();
+        session.close();
+        return null;
     }
  
     @Override
@@ -38,7 +47,4 @@ public class ApplicationDAOImpl implements ApplicationDAO, Serializable {
         session.close();
         return applications;
     }
-    
-    
- 
 }

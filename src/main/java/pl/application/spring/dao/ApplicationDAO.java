@@ -15,5 +15,7 @@ public interface ApplicationDAO {
     public Integer save(Application application);
      
     public List<Application> list();
+    
+    public Application update(Application application);
      
 }

@@ -47,15 +47,18 @@ public class AppHistoryDAOImpl implements AppHistoryDAO, Serializable {
     @Override
     public List<AppHistory> getApplicationHistory(Integer applicationId) {
         Session session = this.sessionFactory.openSession();
-        List<AppHistory> appHistory = session.createQuery("from AppHistory ah where ah.applicationId.id = :applicationId order by mod_date desc").
-                setParameter("applicationId", applicationId).list();
+        String query = "select * from APP_HISTORY ah \n"
+                + " where ah.application_id = :appId\n"
+                + " order by mod_date desc";
+        List<AppHistory> appHistory = session.createSQLQuery(query).addEntity(AppHistory.class).setParameter("appId", applicationId).list();
+        System.out.println("size: " + appHistory.size());
         session.close();
         return appHistory;
     }
 
     @Override
     public List<AppHistory> getLastModified() {
-        String query = "select id,state_id, application_id,reason,mod_date from APP_HISTORY ah \n"
+        String query = "select * from APP_HISTORY ah \n"
                 + " where mod_date = (select max(mod_date) from APP_HISTORY c where c.application_id = ah.application_id)\n"
                 + " order by mod_date desc";
 

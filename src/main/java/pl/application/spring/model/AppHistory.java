@@ -48,6 +48,8 @@ public class AppHistory implements Serializable {
     @Column(name = "MOD_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date modDate;
+    @Column(name = "NEW_CONTENT")
+    private String newContent;
     @JoinColumn(name = "APPLICATION_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Application applicationId;
@@ -107,6 +109,14 @@ public class AppHistory implements Serializable {
         this.stateId = stateId;
     }
 
+    public String getNewContent() {
+        return newContent;
+    }
+
+    public void setNewContent(String newContent) {
+        this.newContent = newContent;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

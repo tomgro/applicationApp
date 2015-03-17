@@ -13,14 +13,17 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import pl.application.comm.ApplicationState;
 import pl.application.spring.model.AppHistory;
 import pl.application.spring.model.AppStates;
 import pl.application.spring.model.Application;
 import pl.application.spring.service.ApplicationService;
+import pl.application.comm.ApplicationState;
 
 /**
  *
@@ -55,14 +58,7 @@ public class ApplicationsTableView implements Serializable{
         return filteredApps;
     }
     
-    public List<String> getStates() {
-        List<String> states = new ArrayList<String>();
-        List<AppStates> appStates = applicationService.getAppStatesDao().list();
-        for(AppStates state : appStates) {
-            states.add(state.getStateName());
-        }
-        return states;
-    }
+    
 
     public void setFilteredApps(List<AppHistory> filteredApps) {
         this.filteredApps = filteredApps;

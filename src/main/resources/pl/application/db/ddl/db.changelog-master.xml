@@ -35,6 +35,16 @@
             stripComments="true"/>
 
 	</changeSet>
+        
+        <changeSet id="150320151339" author="tomekg">
+             <sqlFile
+            encoding="utf8"
+            path="change3.sql"
+            relativeToChangelogFile="true"
+            splitStatements="true"
+            stripComments="true"/>
+
+	</changeSet>
 
 <!--	<include file="1.x/db.changelog-1.x.xml" relativeToChangelogFile="true" />-->
 	

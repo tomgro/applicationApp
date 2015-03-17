@@ -5,99 +5,87 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <h:head>
+        <style>
+            .ui-widget, .ui-widget .ui-widget {
+                font-size: 90% !important;
+            }
+        </style>
+
     </h:head>
     <h:body>
-        <h1>Applications Manager</h1>
+        <h1 style="text-align: center">Applications Manager</h1>
         <h:form id="form">
             <p:growl id="selectedRow" showDetail="true" />
 
             <p:growl id="growl" showDetail="true" sticky="true" life="2000" />  
 
-            <p:panel header="Add/edit application">  
-                <h:panelGrid columns="2" cellpadding="5">  
+            <p:panel header="Add/edit application" id="panelForm">  
+                <h:panelGrid id="appInfo" columns="2" cellpadding="5">  
                     <p:outputLabel for="msgName" value="Application name:" />   
-                    <p:inputText id="msgName" value="#{app.name}" required="true" immediate="true"/>  
+                    <p:inputText id="msgName" value="#{app.name}" required="true" disabled="#{!app.newApp}"/>  
+
                     <p:outputLabel for="msgContent" value="Application content:" />
-                    <p:inputTextarea id="msgContent" value="#{app.content}" immediate="true" required="true" rows="5" cols="30" counter="counter" maxlength="255" counterTemplate="{0} characters remaining." autoResize="false" />
+                    <p:inputTextarea disabled="#{!(app.state == 'VERIFIED')}"
+                                     id="msgContent" immediate="true" value="#{app.content}" required="true" rows="5" cols="30" maxlength="255" counter="counter" counterTemplate="{0} characters remaining." autoResize="false" />
+
+                    <h:outputText id="empty" value="" />
                     <h:outputText id="counter" />
+
+                    <h:outputText id="status" value="State:" />
+                    <p:selectOneMenu id="state" value="#{app.state}" style="width:150px" disabled="#{app.possibleStates.size() == 1}">
+                        <f:selectItems value="#{app.possibleStates}" />
+                        <p:ajax process="@this" update="reason" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="reason" value="Reason:" />   
+                    <p:inputText id="reason" value="#{app.reason}" required="true" disabled="#{!(app.state == 'REJECTED' || app.state == 'DELETED' || app.state == null) || app.possibleStates.size() == 1}"/>  
                 </h:panelGrid>  
 
-                <p:commandButton value="Save" process="@form" ajax="false" id="ajax" update="growl" actionListener="#{app.save}" styleClass="ui-priority-primary" />
-            </p:panel> 
+                <p:commandButton value="New" validateClient="false" ajax="true" update="appInfo" actionListener="#{app.newApplication}" styleClass="ui-priority-primary" />
+                <p:commandButton value="Save" ajax="false" id="ajax" update=":formTable:tbl, form" process="@this"  actionListener="#{app.save}" styleClass="ui-priority-primary" />
 
-            <!-- table -->
-
-            <p:dataTable  id="tbl" var="apps" value="#{appTable.applications}"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                         paginator="true" rows="10" style="margin-bottom:20px" widgetVar="appTableVar" 
-                         filteredValue="#{appTable.filteredApps}"
-                         selectionMode="single" selection="#{app.selectedApp}" rowKey="#{apps.applicationId.id}"
-                         >
-
-                <p:ajax event="rowSelect" listener="#{app.onRowSelect}" update=":form:selectedRow" />
-                <p:ajax event="rowUnselect" listener="#{app.onRowUnselect}" update=":form:selectedRow" />
-
-                <f:facet name="{Exporters}">
-                    <h:commandLink>
-                        <p:graphicImage name="/demo/images/excel.png" width="24"/>
-                        <p:dataExporter type="xls" target="tbl" fileName="cars" />
-                    </h:commandLink>
-
-                    <h:commandLink>
-                        <p:graphicImage name="/demo/images/pdf.png" width="24"/>
-                        <p:dataExporter type="pdf" target="tbl" fileName="cars"/>
-                    </h:commandLink>
-
-                    <h:commandLink>
-                        <p:graphicImage name="/demo/images/csv.png" width="24"/>
-                        <p:dataExporter type="csv" target="tbl" fileName="cars" />
-                    </h:commandLink>
-
-                    <h:commandLink>
-                        <p:graphicImage name="/demo/images/xml.png" width="24"/>
-                        <p:dataExporter type="xml" target="tbl" fileName="cars" />
-                    </h:commandLink>
-                </f:facet>
-
-                <!-- history -->
-
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Show history" />
-                        
-                    </f:facet>
-                    
-                    <p:commandButton value="Show history" id="showHist" ajax="true" action="#{app.history}">
-                        <f:param name="selectedRow" value="#{apps.applicationId.id}" />
-                    
-                    
-                    <p:overlayPanel id="moviePanel" for="showHist" hideEffect="fade" dynamic="true" style="width:600px">
-                    <p:dataTable var="appHist" value="#{app.appHistory}" rows="5" paginator="true">
+                <p:commandButton value="Show history" id="showHist" update=":moviePanel" type="button" oncomplete="PF('moviePanel').loadContents()">
+                </p:commandButton>
+                <p:overlayPanel id="moviePanel" for="showHist" hideEffect="fade" style="width:800px">
+                    <p:dataTable  var="appHist" value="#{app.appHistory}" rows="5" paginator="true" id="histTable" widgetVar="wv">
                         <p:column headerText="Id">
                             <h:outputText value="#{appHist.applicationId.id}" />
                         </p:column>
-
                         <p:column headerText="Name">
                             <h:outputText value="#{appHist.applicationId.name}" />
                         </p:column>
-
-                        <p:column headerText="Content">
-                            <h:outputText value="#{appHist.applicationId.content}" />
+                        
+                         <p:column headerText="Content">
+                                    <h:outputText value="#{appHist.newContent}" />
+                                </p:column>
+                         <p:column headerText="Reason">
+                                <h:outputText value="#{appHist.reason}" />
+                            </p:column>
+                        <p:column headerText="Status">
+                            <h:outputText value="#{appHist.stateId.stateName}" />
                         </p:column>
-
                         <p:column headerText="Modified date">
                             <h:outputText value="#{appHist.modDate}" />
                         </p:column>
                     </p:dataTable>
                 </p:overlayPanel>
-                        </p:commandButton>
-                </p:column>
+            </p:panel> 
+        </h:form>
 
-                <!-- end history -->
+        <!-- table -->
+        <h:form id="formTable"> 
+            <p:outputLabel title="Number of applications" value="#{app.applications.size()}" />
+            <p:dataTable id="tbl" var="apps" value="#{app.applications}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         paginator="true" rows="10" style="margin-bottom:20px" widgetVar="appTableVar" 
+                         filteredValue="#{app.filteredApps}" 
+                         selectionMode="single" selection="#{app.selectedApp}" rowKey="#{apps.applicationId.id}">
 
+                <p:ajax async="true" event="rowSelect" listener="#{app.onRowSelect}" update=":form:panelForm" process="@all" />
 
                 <p:column>
                     <f:facet name="header">
@@ -120,7 +108,7 @@
                 <p:column filterBy="#{apps.stateId.stateName}" headerText="State" footerText="in" filterMatchMode="in">
                     <f:facet name="filter">
                         <p:selectCheckboxMenu label="States" onchange="PF('appTableVar').filter()" panelStyle="width:125px" scrollHeight="150">
-                            <f:selectItems value="#{appTable.states}" />
+                            <f:selectItems value="#{app.states}" />
                         </p:selectCheckboxMenu>
                     </f:facet>
                     <h:outputText value="#{apps.stateId.stateName}" />
@@ -133,27 +121,6 @@
                     <h:outputText value="#{apps.modDate}" />
                 </p:column>
             </p:dataTable>
-
-            <h3>Export Page Data Only</h3>
-            <h:commandLink>
-                <p:graphicImage name="/demo/images/excel.png" />
-                <p:dataExporter type="xls" target="tbl" fileName="cars" pageOnly="true"/>
-            </h:commandLink>
-
-            <h:commandLink>
-                <p:graphicImage name="/demo/images/pdf.png" />
-                <p:dataExporter type="pdf" target="tbl" fileName="cars" pageOnly="true" />
-            </h:commandLink>
-
-            <h:commandLink>
-                <p:graphicImage name="/demo/images/csv.png" />
-                <p:dataExporter type="csv" target="tbl" fileName="cars" pageOnly="true" />
-            </h:commandLink>
-
-            <h:commandLink>
-                <p:graphicImage name="/demo/images/xml.png" />
-                <p:dataExporter type="xml" target="tbl" fileName="cars" pageOnly="true" />
-            </h:commandLink>
 
         </h:form>
 
