@@ -12,6 +12,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,14 @@ public class ApplicationBean {
         setContent("");
         setReason("");
         setState(ApplicationState.CREATED.name());
+        //this.selectedApp = null;
+       // clearSelection();
     }
+    
+    public static void clearSelection() {
+   RequestContext context = RequestContext.getCurrentInstance();
+   context.execute("appTableVar.unselectAllRows()");
+}
 
     public String getName() {
         return name;
@@ -125,8 +133,8 @@ public class ApplicationBean {
         String currState = selectedApp.getStateId().getStateName();
         if(currState.equals(ApplicationState.CREATED.name())) {
             //states.add(ApplicationState.CREATED.name());
-            states.add(ApplicationState.DELETED.name());
             states.add(ApplicationState.VERIFIED.name());
+            states.add(ApplicationState.DELETED.name());
         }
         
         if(currState.equals(ApplicationState.VERIFIED.name())) {
@@ -137,8 +145,8 @@ public class ApplicationBean {
         
         if(currState.equals(ApplicationState.ACCEPTED.name())) {
             //states.add(ApplicationState.ACCEPTED.name());
-            states.add(ApplicationState.REJECTED.name());
             states.add(ApplicationState.PUBLISHED.name());
+            states.add(ApplicationState.REJECTED.name());
         }
         if(currState.equals(ApplicationState.PUBLISHED.name())) {
             states.add(ApplicationState.PUBLISHED.name());

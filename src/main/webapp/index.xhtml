@@ -21,32 +21,32 @@
         <h:form id="form">
             <p:growl id="selectedRow" showDetail="true" />
 
-            <p:growl id="growl" showDetail="true" sticky="true" life="2000" />  
+            <p:growl id="growl" showDetail="true" sticky="true" life="1000" />  
 
             <p:panel header="Add/edit application" id="panelForm">  
                 <h:panelGrid id="appInfo" columns="2" cellpadding="5">  
                     <p:outputLabel for="msgName" value="Application name:" />   
-                    <p:inputText id="msgName" value="#{app.name}" required="true" disabled="#{!app.newApp}"/>  
+                    <p:inputText id="msgName" value="#{app.name}" required="true" disabled="#{!app.newApp}" maxlength="45"/>  
 
                     <p:outputLabel for="msgContent" value="Application content:" />
-                    <p:inputTextarea disabled="#{!(app.state == 'VERIFIED')}"
-                                     id="msgContent" immediate="true" value="#{app.content}" required="true" rows="5" cols="30" maxlength="255" counter="counter" counterTemplate="{0} characters remaining." autoResize="false" />
+                    <p:inputTextarea disabled="#{!(app.state == 'VERIFIED') and !app.newApp}"
+                                     id="msgContent" value="#{app.content}" required="true" rows="5" cols="30" maxlength="255" counter="counter" counterTemplate="{0} characters remaining." autoResize="false" />
 
                     <h:outputText id="empty" value="" />
                     <h:outputText id="counter" />
 
                     <h:outputText id="status" value="State:" />
-                    <p:selectOneMenu id="state" value="#{app.state}" style="width:150px" disabled="#{app.possibleStates.size() == 1}">
-                        <f:selectItems value="#{app.possibleStates}" />
-                        <p:ajax process="@this" update="reason" />
+                    <p:selectOneMenu  id="state" value="#{app.state}" style="width:150px" immediate="true" disabled="#{app.possibleStates.size() == 1}">
+                        <f:selectItems value="#{app.possibleStates}"/>
+                        <p:ajax process="@this" update="reason"/>
                     </p:selectOneMenu>
 
                     <p:outputLabel for="reason" value="Reason:" />   
-                    <p:inputText id="reason" value="#{app.reason}" required="true" disabled="#{!(app.state == 'REJECTED' || app.state == 'DELETED' || app.state == null) || app.possibleStates.size() == 1}"/>  
+                    <p:inputText id="reason" value="#{app.reason}" maxlength="255" required="true" disabled="#{!(app.state == 'REJECTED' || app.state == 'DELETED' || app.state == null) || app.possibleStates.size() == 1}"/>  
                 </h:panelGrid>  
 
-                <p:commandButton value="New" validateClient="false" ajax="true" update="appInfo" actionListener="#{app.newApplication}" styleClass="ui-priority-primary" />
-                <p:commandButton value="Save" ajax="false" id="ajax" update=":formTable:tbl, form" process="@this"  actionListener="#{app.save}" styleClass="ui-priority-primary" />
+                <p:commandButton value="New" validateClient="false" immediate="true" ajax="false" update="appInfo" actionListener="#{app.newApplication}" styleClass="ui-priority-primary" />
+                <p:commandButton value="Save" ajax="false" id="ajax" update="histTable, :formTable:tbl, form" process="@this"  actionListener="#{app.save}" styleClass="ui-priority-primary" disabled="#{(app.selectedApp.stateId.stateName == 'DELETED' || app.selectedApp.stateId.stateName == 'REJECTED' || app.selectedApp.stateId.stateName == 'PUBLISHED') and !app.newApp}" />
 
                 <p:commandButton value="Show history" id="showHist" update=":moviePanel" type="button" oncomplete="PF('moviePanel').loadContents()">
                 </p:commandButton>
@@ -75,14 +75,19 @@
                 </p:overlayPanel>
             </p:panel> 
         </h:form>
-
+        <br />
+        <div>
+            <p:outputLabel style="text-align: center" value="Number of applications: #{app.applications.size()}. Please select application to edit." />
+        </div>
+        <br />
+        
         <!-- table -->
         <h:form id="formTable"> 
-            <p:outputLabel title="Number of applications" value="#{app.applications.size()}" />
+            
             <p:dataTable id="tbl" var="apps" value="#{app.applications}"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                          paginator="true" rows="10" style="margin-bottom:20px" widgetVar="appTableVar" 
-                         filteredValue="#{app.filteredApps}" 
+                         filteredValue="#{app.filteredApps}"
                          selectionMode="single" selection="#{app.selectedApp}" rowKey="#{apps.applicationId.id}">
 
                 <p:ajax async="true" event="rowSelect" listener="#{app.onRowSelect}" update=":form:panelForm" process="@all" />
@@ -121,8 +126,6 @@
                     <h:outputText value="#{apps.modDate}" />
                 </p:column>
             </p:dataTable>
-
         </h:form>
-
     </h:body>
 </html>
