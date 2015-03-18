@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package pl.application.spring.service;
 
 import java.io.Serializable;
@@ -11,7 +10,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.application.comm.ApplicationState;
+import pl.application.enums.ApplicationState;
 import pl.application.spring.dao.AppHistoryDAO;
 import pl.application.spring.dao.AppStatesDAO;
 import pl.application.spring.dao.ApplicationDAO;
@@ -26,13 +25,13 @@ import pl.application.spring.model.Application;
 @Service("ApplicationService")
 @Transactional
 public class ApplicationService implements Serializable {
-    
+
     @Autowired
     private ApplicationDAO applicationDao;
-    
+
     @Autowired
     private AppHistoryDAO appHistoryDao;
-    
+
     @Autowired
     private AppStatesDAO appStatesDao;
 
@@ -47,7 +46,7 @@ public class ApplicationService implements Serializable {
         appHistory.setNewContent(application.getContent());
         getAppHistoryDao().save(appHistory);
     }
-    
+
     @Transactional(readOnly = false)
     public void updateApplication(Application application, String reason, String newContent, ApplicationState applicationState) {
         getApplicationDao().update(application);
@@ -60,9 +59,7 @@ public class ApplicationService implements Serializable {
         appHistory.setApplicationId(application);
         getAppHistoryDao().save(appHistory);
     }
-    
-    
-    
+
     public ApplicationDAO getApplicationDao() {
         return applicationDao;
     }
@@ -86,6 +83,4 @@ public class ApplicationService implements Serializable {
     public void setAppStatesDao(AppStatesDAO appStatesDao) {
         this.appStatesDao = appStatesDao;
     }
-    
-    
 }

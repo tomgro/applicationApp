@@ -2,24 +2,14 @@ package pl.application.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import pl.application.comm.ApplicationState;
-import pl.application.spring.dao.ApplicationDAO;
+import pl.application.enums.ApplicationState;
 import pl.application.spring.model.AppHistory;
 import pl.application.spring.model.AppStates;
 import pl.application.spring.model.Application;
@@ -31,7 +21,7 @@ public class ApplicationBean {
 
     @ManagedProperty(value = "#{ApplicationService}")
     ApplicationService applicationService;
-    
+
     private String name;
     private String content;
     private String state;
@@ -42,6 +32,16 @@ public class ApplicationBean {
     boolean newApp = true;
 
     private List<AppHistory> appHistory;
+    
+    // table
+    List<AppHistory> applications;
+
+    private List<AppHistory> filteredApps;
+
+    @PostConstruct
+    public void init() {
+        applications = applicationService.getAppHistoryDao().getLastModified();
+    }
 
     public void save() {
         if (newApp) {
@@ -60,48 +60,14 @@ public class ApplicationBean {
         newApplication();
         this.init();
     }
-    
+
     public void newApplication() {
         newApp = true;
-        clearForm();
-    }
-
-    private void clearForm() {
         setName("");
         setContent("");
         setReason("");
         setState(ApplicationState.CREATED.name());
-        //this.selectedApp = null;
-       // clearSelection();
-    }
-    
-    public static void clearSelection() {
-   RequestContext context = RequestContext.getCurrentInstance();
-   context.execute("appTableVar.unselectAllRows()");
-}
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public ApplicationService getApplicationService() {
-        return applicationService;
-    }
-
-    public void setApplicationService(ApplicationService applicationService) {
-        this.applicationService = applicationService;
+        setAppHistory(new ArrayList<AppHistory>());
     }
 
     public void onRowSelect(SelectEvent event) {
@@ -119,52 +85,47 @@ public class ApplicationBean {
     public List<String> getStates() {
         List<String> states = new ArrayList<String>();
         List<AppStates> appStates = applicationService.getAppStatesDao().list();
-        for(AppStates state : appStates) {
+        for (AppStates state : appStates) {
             states.add(state.getStateName());
         }
         return states;
     }
-    
+
     public List<String> getPossibleStates() {
         List<String> states = new ArrayList<String>();
-        if(newApp) {
+        if (this.newApp) {
             states.add(ApplicationState.CREATED.name());
         } else {
-        String currState = selectedApp.getStateId().getStateName();
-        if(currState.equals(ApplicationState.CREATED.name())) {
-            //states.add(ApplicationState.CREATED.name());
-            states.add(ApplicationState.VERIFIED.name());
-            states.add(ApplicationState.DELETED.name());
+            String currState = selectedApp.getStateId().getStateName();
+            if (currState.equals(ApplicationState.CREATED.name())) {
+                states.add(ApplicationState.VERIFIED.name());
+                states.add(ApplicationState.DELETED.name());
+            }
+
+            if (currState.equals(ApplicationState.VERIFIED.name())) {
+                states.add(ApplicationState.ACCEPTED.name());
+                states.add(ApplicationState.REJECTED.name());
+            }
+
+            if (currState.equals(ApplicationState.ACCEPTED.name())) {
+                states.add(ApplicationState.PUBLISHED.name());
+                states.add(ApplicationState.REJECTED.name());
+            }
+            if (currState.equals(ApplicationState.PUBLISHED.name())) {
+                states.add(ApplicationState.PUBLISHED.name());
+            }
+
+            if (currState.equals(ApplicationState.DELETED.name())) {
+                states.add(ApplicationState.DELETED.name());
+            }
+
+            if (currState.equals(ApplicationState.REJECTED.name())) {
+                states.add(ApplicationState.REJECTED.name());
+            }
         }
-        
-        if(currState.equals(ApplicationState.VERIFIED.name())) {
-            //states.add(ApplicationState.VERIFIED.name());
-            states.add(ApplicationState.ACCEPTED.name());
-            states.add(ApplicationState.REJECTED.name());
-        }
-        
-        if(currState.equals(ApplicationState.ACCEPTED.name())) {
-            //states.add(ApplicationState.ACCEPTED.name());
-            states.add(ApplicationState.PUBLISHED.name());
-            states.add(ApplicationState.REJECTED.name());
-        }
-        if(currState.equals(ApplicationState.PUBLISHED.name())) {
-            states.add(ApplicationState.PUBLISHED.name());
-        }
-        
-        if(currState.equals(ApplicationState.DELETED.name())) {
-            states.add(ApplicationState.DELETED.name());
-        }
-        
-        if(currState.equals(ApplicationState.REJECTED.name())) {
-            states.add(ApplicationState.REJECTED.name());
-        }
-        
-        }
-        
         return states;
     }
-    
+
     public AppHistory getSelectedApp() {
         return selectedApp;
     }
@@ -197,23 +158,9 @@ public class ApplicationBean {
         this.newApp = newApp;
     }
 
-   //////////////// tab
-    
-    List<AppHistory> applications;
-    
-    private List<AppHistory> filteredApps;
-    
-     
-    @PostConstruct
-    public void init() {
-        applications = applicationService.getAppHistoryDao().getLastModified();
-                // applicationService.getAppHistoryDao().list();
-    }
-
     public List<AppHistory> getApplications() {
         return applications;
     }
- 
 
     public List<AppHistory> getFilteredApps() {
         return filteredApps;
@@ -231,5 +178,28 @@ public class ApplicationBean {
         this.reason = reason;
     }
     
-    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public ApplicationService getApplicationService() {
+        return applicationService;
+    }
+
+    public void setApplicationService(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
+
 }

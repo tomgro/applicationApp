@@ -1,4 +1,4 @@
-package pl.application.comm;
+package pl.application.enums;
 
 /**
  *

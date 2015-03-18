@@ -7,24 +7,12 @@
 package pl.application.test;
 
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import pl.application.spring.dao.PersonDAO;
-import pl.application.spring.model.Person;
+import pl.application.spring.dao.ApplicationDAO;
+import pl.application.spring.model.Application;
 
 /**
  *
@@ -36,47 +24,24 @@ public class TestH2 implements ApplicationContextAware {
     
     @Autowired
 ApplicationContext context;
-//     @Test
-//    public void test2(){
-//
-//        EntityManagerFactory factory = Persistence.createEntityManagerFactory("appPersistenceUnit");
-//        EntityManager theManager = factory.createEntityManager();
-//        assertNotNull(theManager);
-//
-//        theManager.getTransaction().begin();
-//        Person person = new Person();
-//        person.setFirstName("ana");
-//        theManager.persist(person);
-//        theManager.getTransaction().commit();
-//        
-//        System.out.println(person.getId());
-//
-//        Person p = (Person)theManager.find(Person.class, 1);
-//        System.out.println(person.getId());
-//
-//        assertNotNull(p);
-//    }
+
    // @Test
     public void test3() {
  
- //       ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:applicationContext.xml");
+        ApplicationDAO
+                applicationDAO = context.getBean(ApplicationDAO.class);
          
-        PersonDAO personDAO = context.getBean(PersonDAO.class);
+        Application application = new Application();
+        application.setName("name");
+        application.setContent("content");
          
-        Person person = new Person();
-        person.setFirstName("Pankaj"); 
+        applicationDAO.save(application);
          
-        personDAO.save(person);
+        List<Application> list = applicationDAO.list();
          
-        System.out.println("Person::"+person);
-         
-        List<Person> list = personDAO.list();
-         
-        for(Person p : list){
-            System.out.println("Person List::"+p);
+        for(Application a : list){
+            System.out.println("Application List::"+ a);
         }
-        //close resources
-       //context.close();    
     }
 
     @Override

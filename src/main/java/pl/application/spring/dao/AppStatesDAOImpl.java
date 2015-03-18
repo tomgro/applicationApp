@@ -7,9 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.application.comm.ApplicationState;
+import pl.application.enums.ApplicationState;
 import pl.application.spring.model.AppStates;
-import pl.application.spring.model.Application;
 
 public class AppStatesDAOImpl implements AppStatesDAO, Serializable {
 
@@ -52,5 +51,4 @@ public class AppStatesDAOImpl implements AppStatesDAO, Serializable {
         session.close();
         return appStates;
     }
-
 }

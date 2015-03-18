@@ -34,7 +34,7 @@ public class AppHistoryDAOImpl implements AppHistoryDAO, Serializable {
         session.close();
         return appHistory;
     }
-    
+
     @Override
     public List<AppHistory> getApplicationHistory(Application application) {
         Session session = this.sessionFactory.openSession();
@@ -43,7 +43,7 @@ public class AppHistoryDAOImpl implements AppHistoryDAO, Serializable {
         session.close();
         return appHistory;
     }
-    
+
     @Override
     public List<AppHistory> getApplicationHistory(Integer applicationId) {
         Session session = this.sessionFactory.openSession();

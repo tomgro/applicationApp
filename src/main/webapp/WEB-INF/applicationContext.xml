@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-4.0.xsd">
  
-	<context:component-scan base-package="pl.application.spring" />
-	<context:annotation-config />
-        <context:spring-configured/>
+    <context:component-scan base-package="pl.application.spring" />
+    <context:annotation-config />
+    <context:spring-configured/>
 
-            <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-        >
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver" />
         <!-- jdbc:h2:file:~/application/applicationApp/h2/appDB -->
         <property name="url" value="jdbc:h2:file:~/appDB/appDB" />
         <property name="username" value="sa" />
-       <property name="password" value="" />
+        <property name="password" value="" />
     </bean>
  
     <bean id="hibernate3AnnotatedSessionFactory"
-        class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="annotatedClasses">
             <list>
-                <value>pl.application.spring.model.Person</value>
-                 <value>pl.application.spring.model.Application</value>
-                 <value>pl.application.spring.model.AppStates</value>
-                 <value>pl.application.spring.model.AppHistory</value>
+                <value>pl.application.spring.model.Application</value>
+                <value>pl.application.spring.model.AppStates</value>
+                <value>pl.application.spring.model.AppHistory</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -41,10 +39,6 @@
         </property>
     </bean>
      
-    <bean id="personDAO" class="pl.application.spring.dao.PersonDAOImpl">
-        <property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
-    </bean>
-    
     <bean id="applicationDao" class="pl.application.spring.dao.ApplicationDAOImpl">
         <property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
     </bean>

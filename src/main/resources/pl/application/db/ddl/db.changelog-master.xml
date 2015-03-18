@@ -14,16 +14,6 @@
             relativeToChangelogFile="true"
             splitStatements="true"
             stripComments="true"/>
-             
-<!--		<createTable tableName="t_user">
-			<column name="id" type="int">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="name" type="varchar(50)">
-				<constraints nullable="false" />
-			</column>
-			<column name="active" type="boolean" defaultValueBoolean="true" />
-		</createTable>-->
 	</changeSet>
         
         <changeSet id="150320151148" author="tomekg">
@@ -45,12 +35,4 @@
             stripComments="true"/>
 
 	</changeSet>
-
-<!--	<include file="1.x/db.changelog-1.x.xml" relativeToChangelogFile="true" />-->
-	
-	<!--
-	<include file="2.x/db.changelog-2.x.xml" relativeToChangelogFile="true" />
-	<include file="3.x/db.changelog-3.x.xml" relativeToChangelogFile="true" />
-	....
-	-->
 </databaseChangeLog> 

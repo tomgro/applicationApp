@@ -1,4 +1,3 @@
-
 package pl.application.spring.dao;
 
 import java.io.Serializable;
@@ -8,17 +7,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.application.spring.model.Application;
- 
- 
+
 public class ApplicationDAOImpl implements ApplicationDAO, Serializable {
- 
+
     @Autowired
     private SessionFactory sessionFactory;
- 
+
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-     
+
     @Override
     public Integer save(Application application) {
         Session session = this.sessionFactory.openSession();
@@ -29,7 +27,7 @@ public class ApplicationDAOImpl implements ApplicationDAO, Serializable {
         session.close();
         return id;
     }
-    
+
     @Override
     public Application update(Application application) {
         Session session = this.sessionFactory.openSession();
@@ -39,7 +37,7 @@ public class ApplicationDAOImpl implements ApplicationDAO, Serializable {
         session.close();
         return null;
     }
- 
+
     @Override
     public List<Application> list() {
         Session session = this.sessionFactory.openSession();
