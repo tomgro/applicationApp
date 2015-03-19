@@ -16,4 +16,6 @@ public interface ApplicationDAO {
     List<Application> list();
     
     Application update(Application application);
+    
+    Application getById(Integer id);
 }

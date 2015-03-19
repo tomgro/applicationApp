@@ -24,6 +24,7 @@ public class AppStatesDAOImpl implements AppStatesDAO, Serializable {
         Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.persist(appStates);
+        session.flush();
         tx.commit();
         session.close();
     }
@@ -31,11 +32,9 @@ public class AppStatesDAOImpl implements AppStatesDAO, Serializable {
     @Override
     public AppStates getAppStateByName(ApplicationState applicationState) {
         Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         Query query = session.getNamedQuery("AppStates.findByStateName")
                 .setString("stateName", applicationState.name());
         List<AppStates> appStates = query.list();
-        tx.commit();
         session.close();
         if (appStates.size() == 1) {
             return appStates.get(0);

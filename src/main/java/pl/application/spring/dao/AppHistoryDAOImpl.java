@@ -23,6 +23,7 @@ public class AppHistoryDAOImpl implements AppHistoryDAO, Serializable {
         Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.persist(appHistory);
+        session.flush();
         tx.commit();
         session.close();
     }

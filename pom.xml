@@ -8,15 +8,11 @@
 	<name>core-app Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<tomcat.version>7.0.34</tomcat.version>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
  
-        <!-- Spring -->
         <spring.version>4.0.3.RELEASE</spring.version>
  
-        <!-- Hibernate / JPA -->
-        <!-- <hibernate.version>4.3.5.Final</hibernate.version> -->
         <hibernate.version>3.6.9.Final</hibernate.version>
         <slf4j.version>1.7.5</slf4j.version>
 	</properties>
@@ -33,15 +29,20 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>5.0</version>
+			<version>5.1</version>
 		</dependency>
                 
                 <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-            <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+    </dependency>
 
 		<!-- JSF 2 -->
 		<dependency>
@@ -73,7 +74,6 @@
 			<version>2.1</version>
 		</dependency>
 
-
 		<!-- EL -->
 		<dependency>
 			<groupId>org.glassfish.web</groupId>
@@ -87,14 +87,6 @@
     <version>1.1.2</version>
 </dependency>
                 
-                <dependency>
-	<groupId>javax.servlet</groupId>
-	<artifactId>jstl</artifactId>
-	<version>1.2</version>
-</dependency>
-
-                
-                <!-- JSR-330 -->
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
@@ -106,9 +98,6 @@
 			<artifactId>el-ri</artifactId>
 			<version>1.0</version>
 		</dependency>
-
-		<!-- Tomcat 6 need this <dependency> <groupId>com.sun.el</groupId> <artifactId>el-ri</artifactId> 
-			<version>1.0</version> </dependency> -->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -123,49 +112,11 @@
 	<version>2.5</version>
 </dependency>
 
-		
- 
-        <!-- Spring AOP dependency -->
         <dependency>
     	        <groupId>cglib</groupId>
 		<artifactId>cglib</artifactId>
 		<version>2.2</version>
 	</dependency>
- 
-        <!-- MySQL database driver -->
-	<dependency>
-		<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-		<version>5.1.9</version>
-	</dependency>
-        
-<!--         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.0.1.Final</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.common</groupId>
-            <artifactId>hibernate-commons-annotations</artifactId>
-            <version>4.0.1.Final</version>
-            <classifier>tests</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.0.1.Final</version>
-        </dependency>-->
         
          <!-- Hibernate -->
         <dependency>
@@ -221,30 +172,6 @@
             <version>${spring.version}</version>
         </dependency>
  
- 
-	<!-- Hibernate framework 
-	<dependency>
-		<groupId>hibernate</groupId>
-		<artifactId>hibernate3</artifactId>
-		<version>3.2.3.GA</version>
-	</dependency>
-        -->
- 
-	<!-- Hibernate annotation 
-	<dependency>
-		<groupId>hibernate-annotations</groupId>
-		<artifactId>hibernate-annotations</artifactId>
-		<version>3.3.0.GA</version>
-	</dependency>
- 
-        <dependency>
-                <groupId>hibernate-commons-annotations</groupId>
-                <artifactId>hibernate-commons-annotations</artifactId>
-                <version>3.0.0.GA</version>
-        </dependency>
-        -->
- 
-        <!-- Hibernate library dependecy start -->
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
@@ -268,22 +195,13 @@
             <artifactId>antlr</artifactId>
             <version>2.7.7</version>
         </dependency>
-        <!-- Hibernate library dependecy end -->
 		
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.186</version>
         </dependency>
-        
-        <!--        <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>1.4.186</version>
-                <scope>test</scope>
-        </dependency>-->
 
-        <!--  http://rizvnn.blogspot.com/2012/11/integration-testing-with-h2-db-with.html -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
