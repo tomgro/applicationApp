@@ -54,8 +54,7 @@ public class ApplicationBean {
             selApp.setId(selectedApp.getApplicationId().getId());
             selApp.setName(selectedApp.getApplicationId().getName());
             selApp.setContent(content);
-            String newContent = content;
-            applicationService.updateApplication(selApp, reason, newContent, ApplicationState.valueOf(state));
+            applicationService.updateApplication(selApp, reason, content, ApplicationState.valueOf(state));
         }
         newApplication();
         this.init();
@@ -71,10 +70,7 @@ public class ApplicationBean {
     }
 
     public void onRowSelect(SelectEvent event) {
-        newApp = false;
-        AppHistory selected = (AppHistory) event.getObject();
-        FacesMessage msg = new FacesMessage("Application selected", selected.getApplicationId().getId().toString());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.newApp = false;
         setName(selectedApp.getApplicationId().getName());
         setContent(selectedApp.getApplicationId().getContent());
         setState(selectedApp.getStateId().getStateName());

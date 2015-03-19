@@ -28,7 +28,7 @@ public class H2ConnectionTest {
     ApplicationDAO applicationDao;
 
     @Test
-    public void shouldReturnSavedApplication() {
+    public void shouldReturnStoredApplication() {
         // given
         Application application = new Application();
         application.setName("name");
@@ -39,5 +39,14 @@ public class H2ConnectionTest {
         Application savedApp = applicationDao.getById(id);
         Assert.assertEquals(application, savedApp);
     }
-
+    
+    @Test
+    public void shouldReturnNullAfterGetById() {
+        // given
+        Integer id = Integer.MAX_VALUE;
+         // when
+        Application app = applicationDao.getById(id);
+        // then
+        Assert.assertNull(app);
+    }
 }

@@ -35,7 +35,7 @@ public class ApplicationService implements Serializable {
     @Autowired
     private AppStatesDAO appStatesDao;
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void addApplication(Application application) {
         getApplicationDao().save(application);
         AppStates createdState = getAppStatesDao().getAppStateByName(ApplicationState.CREATED);
@@ -47,7 +47,7 @@ public class ApplicationService implements Serializable {
         getAppHistoryDao().save(appHistory);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void updateApplication(Application application, String reason, String newContent, ApplicationState applicationState) {
         getApplicationDao().update(application);
         AppStates newState = getAppStatesDao().getAppStateByName(applicationState);

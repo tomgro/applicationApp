@@ -7,7 +7,7 @@
 		<dbms type="h2" />
 	</preConditions>
         
-        <changeSet id="140320152249" author="tomekg">
+        <changeSet id="170320152249" author="tomekg">
              <sqlFile
             encoding="utf8"
             path="create.sql"
@@ -16,7 +16,7 @@
             stripComments="true"/>
 	</changeSet>
         
-        <changeSet id="150320151148" author="tomekg">
+        <changeSet id="180320152148" author="tomekg">
              <sqlFile
             encoding="utf8"
             path="insert.sql"
@@ -26,10 +26,10 @@
 
 	</changeSet>
         
-        <changeSet id="150320151339" author="tomekg">
+        <changeSet id="190320152139" author="tomekg">
              <sqlFile
             encoding="utf8"
-            path="change3.sql"
+            path="addColumn.sql"
             relativeToChangelogFile="true"
             splitStatements="true"
             stripComments="true"/>

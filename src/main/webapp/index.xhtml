@@ -29,7 +29,7 @@
                     <p:inputText id="msgName" value="#{app.name}" required="true" disabled="#{!app.newApp}" maxlength="45"/>  
 
                     <p:outputLabel for="msgContent" value="Application content:" />
-                    <p:inputTextarea disabled="#{!(app.state == 'VERIFIED') and !app.newApp}"
+                    <p:inputTextarea disabled="#{!(app.state == 'VERIFIED' || app.state == 'CREATED') and !app.newApp}"
                                      id="msgContent" value="#{app.content}" required="true" rows="5" cols="30" maxlength="255" counter="counter" counterTemplate="{0} characters remaining." autoResize="false" />
 
                     <h:outputText id="empty" value="" />
