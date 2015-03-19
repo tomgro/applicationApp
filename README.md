@@ -10,5 +10,6 @@ Założyłem, że wniosek nie może przejść do tego samego stanu (co jest zgod
 http://stackoverflow.com/questions/26320170/java-io-notserializableexception-org-primefaces-component-datatable-datatable-a
 6. Konsola H2 jest dostępna pod adresem http://localhost:PORT/core-app/console
 7. Aplikacja była testowana na serwerze Apache Tomcat v.8.0.3.0
-8. Można użyć Selenium i napisać dodatkowe testy.
+8. Skorzystałem z JUnit oraz Mockito. Można użyć Selenium i napisać dodatkowe testy.
+9. Dodałem możliwość przeglądania historii wniosku.
 
