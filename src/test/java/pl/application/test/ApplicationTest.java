@@ -1,4 +1,3 @@
-
 package pl.application.test;
 
 import java.util.List;
